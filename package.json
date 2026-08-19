@@ -1,0 +1,13 @@
+{
+  "name": "machinery-service-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "International machinery repair/service booking app + admin panel",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1"
+  }
+}
