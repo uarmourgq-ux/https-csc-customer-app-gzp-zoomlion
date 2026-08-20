@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Machinery Service</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Helvetica,Arial,sans-serif;background:#e9ecef;color:#1a1a1a}
+  .phone{max-width:420px;margin:0 auto;min-height:100vh;background:#fff;position:relative;overflow:hidden}
+  input,textarea{font-family:inherit;outline:none;border:none;background:transparent;width:100%}
+  ::placeholder{color:rgba(0,0,0,.35)}
+  a{color:#2a78d6}
+  .hidden{display:none !important}
+  .btn{border:none;color:#fff;font-size:15.5px;font-weight:600;padding:14px 0;border-radius:26px;cursor:pointer;width:100%}
+  .field{margin-bottom:20px}
+  .field label{font-size:13px;display:block;margin-bottom:6px}
+  .field label .req{color:#e05353}
+  .field .row{display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(0,0,0,.08);padding-bottom:8px}
+  .modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.35);z-index:50;display:flex}
+  .lang-panel{width:70%;max-width:230px;background:#fff;margin-left:auto;height:100%;padding:56px 0 0;overflow-y:auto}
+  .lang-item{padding:14px 22px;font-size:15px;cursor:pointer}
+  .country-sheet{width:100%;height:78%;background:#fff;border-radius:18px 18px 0 0;margin-top:auto;display:flex;flex-direction:column}
+  .country-search{padding:14px 16px 10px}
+  .country-search input{background:#f2f3f5;border-radius:20px;padding:10px 16px;font-size:14px}
+  .country-item{padding:13px 20px;font-size:14.5px;border-bottom:1px solid rgba(0,0,0,.05);cursor:pointer}
+  #serviceScreen{display:none;height:100vh;overflow-y:auto;background:#f5f6f7}
+  .attach-box{width:72px;height:72px;border-radius:8px;border:1.4px dashed rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(0,0,0,.35);flex-shrink:0;position:relative;overflow:hidden}
+  .attach-box img,.attach-box video{width:100%;height:100%;object-fit:cover;display:block}
+  .attach-box .chip{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:9px;color:#6b8f7c;text-align:center;padding:4px;word-break:break-all;background:#eef3ef}
+  .attach-box .rm{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.55);color:#fff;width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer;line-height:1}
+  .clear-serial{cursor:pointer;color:rgba(0,0,0,.35);font-size:16px;line-height:1;padding:2px;display:none;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <div id="welcomeScreen">
+    <div style="position:relative;background:linear-gradient(180deg,#eaf6ef,#fbfdfc 80%);padding:26px 20px 34px">
+      <svg id="langToggle" style="position:absolute;top:18px;right:18px;cursor:pointer" width="26" height="26" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="9.5" stroke="#2a2a2a" stroke-width="1.4"/>
+        <ellipse cx="12" cy="12" rx="4.2" ry="9.5" stroke="#2a2a2a" stroke-width="1.2"/>
+        <line x1="2.5" y1="12" x2="21.5" y2="12" stroke="#2a2a2a" stroke-width="1.2"/>
+      </svg>
+      <div id="heroBox" style="height:160px;border-radius:12px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;color:#6b8f7c;font-family:ui-monospace,monospace;font-size:11px;background:repeating-linear-gradient(45deg,#dcf0e3,#dcf0e3 10px,#eaf6ef 10px,#eaf6ef 20px);overflow:hidden">brand illustration</div>
+      <div id="brandNameLabel" style="font-size:11.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px"></div>
+      <div style="font-size:21px;font-weight:700" id="tWelcome"></div>
+    </div>
+    <div style="padding:20px">
+      <button class="btn" id="ctaBtn"></button>
+      <p style="font-size:12.5px;line-height:1.6;color:rgba(0,0,0,.55);margin-top:16px" id="tRec"></p>
+    </div>
+    <div style="margin-top:24px;padding:14px 20px;background:#f3f8f5;display:flex;align-items:center;gap:10px">
+      <div id="hotlineIcon" style="width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.7 3.6.7.6 0 1 .4 1 1v3.6c0 .6-.4 1-1 1C10.6 21.3 2.7 13.4 2.7 3.9c0-.6.4-1 1-1H7.3c.6 0 1 .4 1 1 0 1.3.3 2.5.7 3.6.1.3 0 .7-.2 1z"/></svg>
+      </div>
+      <div>
+        <div style="font-size:11.5px;color:rgba(0,0,0,.55)" id="tHotline"></div>
+        <div style="font-size:13.5px;font-weight:600">+998 71 205 05 82</div>
+      </div>
+    </div>
+    <div id="langModal" class="modal-backdrop hidden">
+      <div class="lang-panel" id="langList"></div>
+    </div>
+  </div>
+
+  <div id="serviceScreen">
+    <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:#fff;border-bottom:1px solid rgba(0,0,0,.06)">
+      <svg id="backBtn" style="cursor:pointer" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8"><path d="M15 5l-7 7 7 7"/></svg>
+      <div style="font-size:17px;font-weight:600" id="tFormTitle"></div>
+    </div>
+    <div style="background:#fff;padding:18px;display:flex;flex-direction:column;gap:20px">
+      <div class="field">
+        <label><span class="req">*</span><span id="tSerial"></span></label>
+        <div class="row">
+          <input id="serialInput" />
+          <span id="clearSerialBtn" class="clear-serial">✕</span>
+        </div>
+      </div>
+      <div class="field">
+        <label><span class="req">*</span><span id="tServiceType"></span></label>
+        <div class="row" style="justify-content:space-between">
+          <span id="serviceTypeVal"></span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(0,0,0,.4)" stroke-width="1.6"><path d="M9 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+      <div class="field">
+        <label><span class="req">*</span><span id="tPhone"></span></label>
+        <div class="row">
+          <div id="countryToggle" style="display:flex;align-items:center;gap:3px;color:#2a78d6;cursor:pointer;white-space:nowrap">
+            <span id="callCodeVal">+7</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="#2a78d6"><path d="M7 10l5 5 5-5z"/></svg>
+          </div>
+          <input id="phoneInput" />
+        </div>
+      </div>
+      <div class="field">
+        <label><span class="req">*</span><span id="tCode"></span></label>
+        <div class="row">
+          <input id="codeInput" />
+          <span id="sendCodeBtn" style="font-size:13.5px;font-weight:600;color:#3fa66b;cursor:pointer;white-space:nowrap"></span>
+        </div>
+      </div>
+      <div class="field">
+        <label id="tDesc"></label>
+        <textarea id="descInput" rows="3" style="border-bottom:1px solid rgba(0,0,0,.08);padding-bottom:8px;resize:none"></textarea>
+      </div>
+      <div class="field">
+        <div style="font-size:12px;color:rgba(0,0,0,.5);line-height:1.5;margin-bottom:10px" id="tAttach"></div>
+        <div class="attach-box" id="attachBox">
+          <svg id="attachIcon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(0,0,0,.35)" stroke-width="1.4"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="1.6"/><path d="M3 16l5-4 4 3 4-4 5 5"/></svg>
+        </div>
+        <input type="file" id="attachFileInput" accept="image/*,video/*" capture="environment" style="display:none">
+      </div>
+    </div>
+    <p style="font-size:11.5px;color:rgba(0,0,0,.5);line-height:1.6;padding:16px 18px 90px" id="tNote"></p>
+    <div style="position:sticky;bottom:0;padding:14px;background:#fff;border-top:1px solid rgba(0,0,0,.06)">
+      <button class="btn" id="submitBtn" style="background:#c9dfd0"></button>
+    </div>
+    <div id="countryModal" class="modal-backdrop hidden" style="align-items:flex-end">
+      <div class="country-sheet">
+        <div class="country-search"><input id="countrySearch" /></div>
+        <div id="countryList" style="overflow-y:auto;flex:1"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>
+const T = {
+  ru:{welcome:'Добро пожаловать в наши услуги',cta:'Однокнопочный ремонт / запись на обслуживание',rec1:'Рекомендуем вам напрямую ',recLink1:'открыть приложение',rec2:' для вызова услуг по ремонту и обслуживанию. Если у вас нет приложения, вы можете просто нажать ',recLink2:'скачать приложение',rec3:', чтобы получить более удобные услуги.',hotline:'Горячая линия поддержки',formTitle:'Ремонт/Обслуживание',serial:'Серийный номер устройства',serviceLabel:'Тип услуги',serviceVal:'Сообщение о ремонте',phoneLabel:'Контактный телефон',codeLabel:'Код подтверждения',enter:'Пожалуйста, введите',sendCode:'Отправить код подтверждения',descLabel:'Описание неисправности',attachLabel:'Приложения (табличка с данными оборудования, фотографии/видео неисправностей, время работы оборудования и т.д.)',note:'После подачи заявки на ремонт/обслуживание с вами свяжется сервисный инженер для подтверждения услуги, пожалуйста, держите мобильный телефон в рабочем состоянии.',submit:'Представить на рассмотрение',codeSentMsg:'Отправлено',scanStatus:'Сканирование…',scanNoCamera:'Камера недоступна. Проверьте разрешение или введите номер вручную.',scanNotFound:'Код не найден в базе, но вставлен как есть'},
+  en:{welcome:'Welcome to our service',cta:'One-tap repair / service booking',rec1:'We recommend you directly ',recLink1:'open the app',rec2:' to request repair and maintenance services. If you don\u2019t have the app, just tap ',recLink2:'download the app',rec3:' for a smoother experience.',hotline:'Support hotline',formTitle:'Repair / Service',serial:'Equipment serial number',serviceLabel:'Service type',serviceVal:'Repair report',phoneLabel:'Contact phone',codeLabel:'Verification code',enter:'Please enter',sendCode:'Send verification code',descLabel:'Fault description',attachLabel:'Attachments (nameplate, fault photos/videos, running hours, etc.)',note:'After submitting your request, a service engineer will contact you — please keep your phone reachable.',submit:'Submit for review',codeSentMsg:'Sent',scanStatus:'Scanning…',scanNoCamera:'Camera unavailable. Check permission or enter the number manually.',scanNotFound:'Code not found in the database, inserted as-is'},
+  uz:{welcome:'Xizmatlarimizga xush kelibsiz',cta:'Bir tugma bilan ta\u2019mirlash / xizmatga yozilish',rec1:'To\u2018g\u2018ridan-to\u2018g\u2018ri ',recLink1:'ilovani ochishni',rec2:' tavsiya qilamiz. Ilovangiz bo\u2018lmasa, qulayroq xizmat olish uchun shunchaki ',recLink2:'ilovani yuklab olish',rec3:' tugmasini bosing.',hotline:'Qo\u2018llab-quvvatlash issiq chizig\u2018i',formTitle:'Ta\u2019mirlash/Xizmat',serial:'Uskuna seriya raqami',serviceLabel:'Xizmat turi',serviceVal:'Ta\u2019mirlash haqida xabar',phoneLabel:'Aloqa telefoni',codeLabel:'Tasdiqlash kodi',enter:'Iltimos, kiriting',sendCode:'Tasdiqlash kodini yuborish',descLabel:'Nosozlik tavsifi',attachLabel:'Ilovalar (uskuna yorlig\u2018i, nosozlik fotosi/videosi va h.k.)',note:'Ariza yuborilgandan so\u2018ng, servis muhandisi siz bilan bog\u2018lanadi, telefoningizni yoniq ushlab turing.',submit:'Ko\u2018rib chiqishga yuborish',codeSentMsg:'Yuborildi',scanStatus:'Skanerlanmoqda…',scanNoCamera:'Kamera ishlamayapti. Ruxsatni tekshiring yoki raqamni qo‘lda kiriting.',scanNotFound:'Kod bazada topilmadi, lekin shundayligicha kiritildi'},
+  zh:{welcome:'\u6b22\u8fce\u4f7f\u7528\u6211\u4eec\u7684\u670d\u52a1',cta:'\u4e00\u952e\u62a5\u4fee/\u9884\u7ea6\u4fdd\u517b',rec1:'\u5efa\u8bae\u60a8\u76f4\u63a5',recLink1:'\u6253\u5f00\u5e94\u7528',rec2:'\u547c\u53eb\u62a5\u4fee\u4e0e\u4fdd\u517b\u670d\u52a1\u3002',recLink2:'\u4e0b\u8f7d\u5e94\u7528',rec3:'\u4ee5\u83b7\u5f97\u66f4\u4f18\u670d\u52a1\u3002',hotline:'\u5ba2\u670d\u70ed\u7ebf',formTitle:'\u62a5\u4fee/\u4fdd\u517b',serial:'\u8bbe\u5907\u5e8f\u5217\u53f7',serviceLabel:'\u670d\u52a1\u7c7b\u578b',serviceVal:'\u62a5\u4fee\u7533\u62a5',phoneLabel:'\u8054\u7cfb\u7535\u8bdd',codeLabel:'\u9a8c\u8bc1\u7801',enter:'\u8bf7\u8f93\u5165',sendCode:'\u53d1\u9001\u9a8c\u8bc1\u7801',descLabel:'\u6545\u969c\u63cf\u8ff0',attachLabel:'\u9644\u4ef6\uff08\u8bbe\u5907\u94cc\u724c\u3001\u6545\u969c\u7167\u7247/\u89c6\u9891\u7b49\uff09',note:'\u63d0\u4ea4\u5de5\u5355\u540e\uff0c\u670d\u52a1\u5de5\u7a0b\u5e08\u5c06\u4e0e\u60a8\u8054\u7cfb\uff0c\u8bf7\u4fdd\u6301\u624b\u673a\u7545\u901a\u3002',submit:'\u63d0\u4ea4\u5ba1\u6838',codeSentMsg:'\u5df2\u53d1\u9001',scanStatus:'\u626b\u63cf\u4e2d\u2026',scanNoCamera:'\u65e0\u6cd5\u4f7f\u7528\u6444\u50cf\u5934\u3002\u8bf7\u68c0\u67e5\u6743\u9650\u6216\u624b\u52a8\u8f93\u5165\u53f7\u7801\u3002',scanNotFound:'\u6570\u636e\u5e93\u4e2d\u672a\u627e\u5230\u8be5\u4ee3\u7801\uff0c\u5df2\u6309\u539f\u6837\u63d2\u5165'}
+};
+const LANGS = [{code:'zh',label:'中文'},{code:'en',label:'English'},{code:'ar',label:'بالعربية'},{code:'es',label:'Español'},{code:'id',label:'Indonesia'},{code:'pt',label:'Português'},{code:'ru',label:'русский'},{code:'th',label:'ภาษาไทย'},{code:'tr',label:'Türkçe'},{code:'vi',label:'VietName'},{code:'ko',label:'한국어'},{code:'de',label:'Deutsch'},{code:'fr',label:'Français'},{code:'it',label:'Italiano'},{code:'uz',label:"O'zbek"}];
+const COUNTRIES = [{c:'61',n:'Австралия'},{c:'43',n:'Австрия'},{c:'994',n:'Азербайджан'},{c:'355',n:'Албания'},{c:'213',n:'Алжир'},{c:'54',n:'Аргентина'},{c:'374',n:'Армения'},{c:'375',n:'Беларусь'},{c:'32',n:'Бельгия'},{c:'55',n:'Бразилия'},{c:'44',n:'Великобритания'},{c:'49',n:'Германия'},{c:'91',n:'Индия'},{c:'62',n:'Индонезия'},{c:'39',n:'Италия'},{c:'86',n:'Китай'},{c:'82',n:'Корея'},{c:'998',n:'Узбекистан'},{c:'1',n:'США'},{c:'90',n:'Турция'},{c:'966',n:'Саудовская Аравия'},{c:'971',n:'ОАЭ'},{c:'7',n:'Россия'}];
+const KNOWN = ['ru','en','uz','zh'];
+
+let cfg = { brandName:'TerraLink Service', primaryColor:'#3fa66b', logoFile:null, devices:[] };
+let lang = 'ru';
+
+function t(){ return T[lang]; }
+
+async function loadConfig(){
+  try{ const r = await fetch('/api/config'); cfg = await r.json(); }catch(e){}
+  applyBrand();
+}
+function applyBrand(){
+  document.documentElement.style.setProperty('--brand', cfg.primaryColor || '#3fa66b');
+  document.querySelectorAll('.btn, #hotlineIcon').forEach(el=>el.style.background = cfg.primaryColor || '#3fa66b');
+  document.getElementById('sendCodeBtn').style.color = cfg.primaryColor || '#3fa66b';
+  document.getElementById('brandNameLabel').style.color = cfg.primaryColor || '#3fa66b';
+  document.getElementById('brandNameLabel').textContent = cfg.brandName || '';
+  if (cfg.logoFile) {
+    document.getElementById('heroBox').innerHTML = '<img src="/uploads/'+encodeURIComponent(cfg.logoFile)+'" style="width:100%;height:100%;object-fit:cover;display:block">';
+    document.getElementById('heroBox').style.background = 'transparent';
+  }
+}
+function renderTexts(){
+  const d = t();
+  document.getElementById('tWelcome').textContent = d.welcome;
+  document.getElementById('ctaBtn').textContent = d.cta;
+  document.getElementById('tRec').innerHTML = d.rec1 + '<a href="#">'+d.recLink1+'</a>' + d.rec2 + '<a href="#">'+d.recLink2+'</a>' + d.rec3;
+  document.getElementById('tHotline').textContent = d.hotline;
+  document.getElementById('tFormTitle').textContent = d.formTitle;
+  document.getElementById('tSerial').textContent = d.serial;
+  document.getElementById('tServiceType').textContent = d.serviceLabel;
+  document.getElementById('serviceTypeVal').textContent = d.serviceVal;
+  document.getElementById('tPhone').textContent = d.phoneLabel;
+  document.getElementById('tCode').textContent = d.codeLabel;
+  document.getElementById('phoneInput').placeholder = d.enter;
+  document.getElementById('codeInput').placeholder = d.enter;
+  document.getElementById('sendCodeBtn').textContent = d.sendCode;
+  document.getElementById('tDesc').textContent = d.descLabel;
+  document.getElementById('descInput').placeholder = d.enter;
+  document.getElementById('tAttach').textContent = d.attachLabel;
+  document.getElementById('tNote').textContent = d.note;
+  document.getElementById('submitBtn').textContent = d.submit;
+  document.getElementById('countrySearch').placeholder = d.enter;
+}
+function renderLangList(filter){
+  const wrap = document.getElementById('langList');
+  wrap.innerHTML = '';
+  LANGS.filter(l=>l.label.toLowerCase().includes((filter||'').toLowerCase())).forEach(l=>{
+    const div = document.createElement('div');
+    div.className = 'lang-item'; div.textContent = l.label;
+    div.onclick = ()=>{ lang = KNOWN.includes(l.code) ? l.code : 'en'; renderTexts(); document.getElementById('langModal').classList.add('hidden'); };
+    wrap.appendChild(div);
+  });
+}
+function renderCountryList(filter){
+  const wrap = document.getElementById('countryList');
+  wrap.innerHTML = '';
+  COUNTRIES.filter(c=>(c.n+c.c).toLowerCase().includes((filter||'').toLowerCase())).forEach(c=>{
+    const div = document.createElement('div');
+    div.className = 'country-item'; div.textContent = c.c+'-'+c.n;
+    div.onclick = ()=>{ document.getElementById('callCodeVal').textContent = '+'+c.c; document.getElementById('countryModal').classList.add('hidden'); };
+    wrap.appendChild(div);
+  });
+}
+
+document.getElementById('langToggle').onclick = ()=>{ renderLangList(''); document.getElementById('langModal').classList.remove('hidden'); };
+document.getElementById('langModal').onclick = (e)=>{ if(e.target.id==='langModal') e.target.classList.add('hidden'); };
+document.getElementById('ctaBtn').onclick = ()=>{ document.getElementById('welcomeScreen').style.display='none'; document.getElementById('serviceScreen').style.display='block'; };
+document.getElementById('backBtn').onclick = ()=>{ document.getElementById('serviceScreen').style.display='none'; document.getElementById('welcomeScreen').style.display='block'; };
+document.getElementById('countryToggle').onclick = ()=>{ renderCountryList(''); document.getElementById('countryModal').classList.remove('hidden'); };
+document.getElementById('countryModal').onclick = (e)=>{ if(e.target.id==='countryModal') e.target.classList.add('hidden'); };
+document.getElementById('countrySearch').oninput = (e)=> renderCountryList(e.target.value);
+document.getElementById('sendCodeBtn').onclick = ()=>{
+  if(!document.getElementById('phoneInput').value) return;
+  document.getElementById('sendCodeBtn').textContent = t().codeSentMsg;
+  setTimeout(()=> document.getElementById('sendCodeBtn').textContent = t().sendCode, 2500);
+};
+
+const serialInput = document.getElementById('serialInput');
+const clearSerialBtn = document.getElementById('clearSerialBtn');
+function updateClearSerialBtn(){ clearSerialBtn.style.display = serialInput.value ? 'flex' : 'none'; }
+serialInput.addEventListener('input', updateClearSerialBtn);
+clearSerialBtn.onclick = ()=>{ serialInput.value=''; updateClearSerialBtn(); serialInput.focus(); };
+
+const attachBox = document.getElementById('attachBox');
+const attachFileInput = document.getElementById('attachFileInput');
+const attachIconSVG = document.getElementById('attachIcon').outerHTML;
+let attachedFile = null;
+
+attachBox.onclick = ()=>{ if (!attachedFile) attachFileInput.click(); };
+attachFileInput.onchange = ()=>{
+  const file = attachFileInput.files[0];
+  attachFileInput.value = '';
+  if (!file) return;
+  attachedFile = file;
+  renderAttach();
+};
+function renderAttach(){
+  attachBox.innerHTML = '';
+  if (!attachedFile){
+    attachBox.innerHTML = attachIconSVG;
+    attachBox.style.cursor = 'pointer';
+    return;
+  }
+  attachBox.style.cursor = 'default';
+  if (attachedFile.type && attachedFile.type.indexOf('image/') === 0){
+    const img = document.createElement('img');
+    const reader = new FileReader();
+    reader.onload = e => img.src = e.target.result;
+    reader.readAsDataURL(attachedFile);
+    attachBox.appendChild(img);
+  } else if (attachedFile.type && attachedFile.type.indexOf('video/') === 0){
+    const vid = document.createElement('video');
+    vid.muted = true;
+    vid.src = URL.createObjectURL(attachedFile);
+    attachBox.appendChild(vid);
+  } else {
+    const chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = attachedFile.name;
+    attachBox.appendChild(chip);
+  }
+  const rm = document.createElement('div');
+  rm.className = 'rm';
+  rm.textContent = '✕';
+  rm.onclick = (e)=>{
+    e.stopPropagation();
+    attachedFile = null;
+    renderAttach();
+  };
+  attachBox.appendChild(rm);
+}
+
+document.getElementById('submitBtn').onclick = ()=>{ alert(lang==='uz' ? 'Ariza yuborildi (demo)' : 'Заявка отправлена (демо)'); };
+
+const scannedSerial = new URLSearchParams(window.location.search).get('serial');
+serialInput.value = scannedSerial || '';
+updateClearSerialBtn();
+loadConfig().then(()=>{ renderTexts(); });
+</script>
+</body>
+</html>
